@@ -68,16 +68,17 @@ public class DemoUI extends UI {
     private AbstractLayout createContent() {
         VerticalLayout layout = new VerticalLayout();
         final MyScaleImage image = new MyScaleImage(new ThemeResource(
-                "images/earth.jpg"));
-        image.setWidth(800, Unit.PIXELS);
-        image.setHeight(400, Unit.PIXELS);
+                "images/autumn.jpg"));
+        image.setWidth(700, Unit.PIXELS);
+        image.setHeight(500, Unit.PIXELS);
         image.setStyleProperty("backgroundRepeat", "no-repeat");
+        image.setStyleProperty("backgroundSize", "100%");
         image.setStyleProperty("top", "0px");
         image.setStyleProperty("left", "0px");
         CssLayout imageContainer = new CssLayout();
         imageContainer.addStyleName("image-container");
-        imageContainer.setWidth(800, Unit.PIXELS);
-        imageContainer.setHeight(400, Unit.PIXELS);
+        imageContainer.setWidth(700, Unit.PIXELS);
+        imageContainer.setHeight(500, Unit.PIXELS);
         imageContainer.addComponent(image);
         layout.addComponent(imageContainer);
 
