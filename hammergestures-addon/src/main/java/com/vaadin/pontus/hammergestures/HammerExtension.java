@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractJavaScriptExtension;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.JavaScriptFunction;
 
 import elemental.json.JsonArray;
 
@@ -60,9 +61,14 @@ public class HammerExtension extends AbstractJavaScriptExtension {
     public void addPanRecognizer(Collection<PanEvent> events,
             RecognizerOptions options, List<HammerRecognizer> recognizeWith) {
         addRecognizer(events, options, "addPanRecognizer", "panEventHandler",
-                recognizeWith,
-                (AbstractComponent comp, HammerEventData data) -> {
-                    return new HammerPanEvent(component, data);
+                recognizeWith, new HammerEventConstructor() {
+
+                    @Override
+                    public HammerEvent construct(
+                            AbstractComponent source,
+                            com.vaadin.pontus.hammergestures.HammerEventData eventData) {
+                        return new HammerPanEvent(source, eventData);
+                    }
                 });
     }
 
@@ -76,9 +82,14 @@ public class HammerExtension extends AbstractJavaScriptExtension {
     public void addPinchRecognizer(Collection<PinchEvent> events,
             RecognizerOptions options, List<HammerRecognizer> recognizeWith) {
         addRecognizer(events, options, "addPinchRecognizer",
-                "pinchEventHandler", recognizeWith, (AbstractComponent comp,
-                        HammerEventData data) -> {
-                    return new HammerPinchEvent(component, data);
+                "pinchEventHandler", recognizeWith,
+                new HammerEventConstructor() {
+
+                    public HammerEvent construct(AbstractComponent source,
+                            HammerEventData eventData) {
+                        return new HammerPinchEvent(source, eventData);
+                    }
+
                 });
     }
 
@@ -92,9 +103,14 @@ public class HammerExtension extends AbstractJavaScriptExtension {
     public void addRotateRecognizer(Collection<RotateEvent> events,
             RecognizerOptions options, List<HammerRecognizer> recognizeWith) {
         addRecognizer(events, options, "addRotateRecognizer",
-                "rotateEventHandler", recognizeWith, (AbstractComponent comp,
-                        HammerEventData data) -> {
-                    return new HammerRotateEvent(component, data);
+                "rotateEventHandler", recognizeWith,
+                new HammerEventConstructor() {
+
+                    @Override
+                    public HammerEvent construct(AbstractComponent source,
+                            HammerEventData eventData) {
+                        return new HammerRotateEvent(source, eventData);
+                    }
                 });
     }
 
@@ -108,23 +124,36 @@ public class HammerExtension extends AbstractJavaScriptExtension {
     public void addSwipeRecognizer(Collection<SwipeEvent> events,
             RecognizerOptions options, List<HammerRecognizer> recognizeWith) {
         addRecognizer(events, options, "addSwipeRecognizer",
-                "swipeEventHandler", recognizeWith, (AbstractComponent comp,
-                        HammerEventData data) -> {
-                    return new HammerSwipeEvent(component, data);
+                "swipeEventHandler", recognizeWith,
+                new HammerEventConstructor() {
+
+                    @Override
+                    public HammerEvent construct(AbstractComponent source,
+                            HammerEventData eventData) {
+                        return new HammerSwipeEvent(source, eventData);
+                    }
                 });
     }
 
     private void addRecognizer(Collection<? extends HammerEventValue> events,
             RecognizerOptions options, String addRecognizerFunction,
             String eventHandlerFunction, List<HammerRecognizer> recognizeWith,
-            HammerEventConstructor contructor) {
+            final HammerEventConstructor contructor) {
+        if (events == null || events.isEmpty()) {
+            return;
+        }
+
+        if (options == null) {
+            options = new RecognizerOptions();
+        }
         Set<String> optionSet = options.getOptions();
 
-        String eventStr = events.stream().map((HammerEventValue e) -> {
-            return e.value();
-        }).reduce("", (String a1, String a2) -> {
-            return a1 + " " + a2;
-        });
+        StringBuilder builder = new StringBuilder();
+        for (HammerEventValue e : events) {
+            builder.append(e.value());
+            builder.append(' ');
+        }
+        String eventStr = builder.toString();
         Gson gson = new Gson();
         if (optionSet.isEmpty()) {
             callFunction(addRecognizerFunction, eventStr.trim(),
@@ -133,21 +162,21 @@ public class HammerExtension extends AbstractJavaScriptExtension {
             callFunction(addRecognizerFunction, eventStr.trim(),
                     gson.toJson(recognizeWith), options.toJson(gson));
         }
-        addFunction(
-                eventHandlerFunction,
-                (JsonArray args) -> {
-                    if (args.length() == 1) {
-                        HammerEventData data = new Gson()
-                                .<HammerEventData> fromJson(args.get(0)
-                                        .toJson(), HammerEventData.class);
-                        fireEvent(contructor.construct(component, data));
-                    } else {
-                        throw new RuntimeException(
-                                "A malformed event was sent from client-side with "
-                                        + args.length() + " arguments");
-                    }
+        addFunction(eventHandlerFunction, new JavaScriptFunction() {
+            public void call(JsonArray args) {
+                if (args.length() == 1) {
+                    HammerEventData data = new Gson()
+                            .<HammerEventData> fromJson(args.get(0).toJson(),
+                                    HammerEventData.class);
+                    fireEvent(contructor.construct(component, data));
+                } else {
+                    throw new RuntimeException(
+                            "A malformed event was sent from client-side with "
+                                    + args.length() + " arguments");
+                }
 
-                });
+            }
+        });
     }
 
     /**
@@ -210,6 +239,9 @@ public class HammerExtension extends AbstractJavaScriptExtension {
      *            The recognizers to remove
      */
     public void removeRecognizers(List<HammerRecognizer> recognizers) {
+        if (recognizers == null || recognizers.isEmpty()) {
+            return;
+        }
         callFunction("removeRecognizers", new Gson().toJson(recognizers));
         for (HammerRecognizer req : recognizers) {
             switch (req) {
