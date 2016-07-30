@@ -5,7 +5,7 @@
 	<groupId>com.vaadin.pontus</groupId>
 	<artifactId>hammergestures</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>HammerComponent Add-on</name>
 
 	<properties>
