@@ -6,7 +6,7 @@
 	<artifactId>hammergestures</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1</version>
-	<name>HammerComponent Add-on</name>
+	<name>HammerGestures Add-on</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

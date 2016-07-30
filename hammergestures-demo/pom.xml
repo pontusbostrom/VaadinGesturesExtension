@@ -6,7 +6,7 @@
 	<artifactId>hammergestures-demo</artifactId>
 	<packaging>war</packaging>
 	<version>0.1</version>
-	<name>HammerComponent Add-on Demo</name>
+	<name>HammerGestures Add-on Demo</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
