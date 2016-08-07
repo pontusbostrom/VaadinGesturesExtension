@@ -29,6 +29,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractLayout;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CssLayout;
@@ -52,15 +53,24 @@ public class DemoUI extends UI {
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
-        layout.addComponent(new Label("<h1> Multi-touch gesture demo</h1>",
-                ContentMode.HTML));
-        layout.addComponent(new Label(
-                "The image can be manipulated with various gestures. "
+        Label header = new Label("<h1> Multi-touch gesture demo</h1>",
+                ContentMode.HTML);
+        header.setWidthUndefined();
+        layout.addComponent(header);
+        Label description = new Label(
+                "<p>The image can be manipulated with various gestures. "
                         + "The gestures are based on the Hammer.js library. "
                         + "Gestures supported are: pan, swipe, pinch, rotate. "
                         + "In desktop browsers, press shift to enable multi-touch "
-                        + "emulation needed for pinch and rotate."));
-        layout.addComponent(createContent());
+                        + "emulation needed for pinch and rotate.</p>",
+                ContentMode.HTML);
+        layout.addComponent(description);
+        AbstractLayout content = createContent();
+        layout.addComponent(content);
+        layout.setMargin(true);
+        layout.setComponentAlignment(header, Alignment.TOP_CENTER);
+        layout.setComponentAlignment(description, Alignment.TOP_CENTER);
+        layout.setComponentAlignment(content, Alignment.TOP_CENTER);
         setContent(layout);
 
     }
@@ -81,6 +91,7 @@ public class DemoUI extends UI {
         imageContainer.setHeight(500, Unit.PIXELS);
         imageContainer.addComponent(image);
         layout.addComponent(imageContainer);
+        layout.setComponentAlignment(imageContainer, Alignment.TOP_CENTER);
 
         HammerExtension extension = new HammerExtension(image);
 
@@ -166,6 +177,7 @@ public class DemoUI extends UI {
             removeButtons.addComponent(button);
         }
         layout.addComponent(removeButtons);
+        layout.setComponentAlignment(removeButtons, Alignment.TOP_CENTER);
 
         return layout;
 
@@ -180,7 +192,7 @@ public class DemoUI extends UI {
         public MyScaleImage(Resource resource) {
             super(resource);
             setStyleProperty("position", "relative");
-            setStyleProperty("backgroundPosition", "0px 0px");
+            setStyleProperty("backgroundPosition", "center");
         }
 
         @Override
