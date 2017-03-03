@@ -29,9 +29,7 @@ import elemental.json.JsonArray;
  * @author Pontus Boström
  *
  */
-@JavaScript({
-        "http://cdn.rawgit.com/hammerjs/touchemulator/0.0.2/touch-emulator.js",
-        "gestures.js", "http://hammerjs.github.io/dist/hammer.min.js" })
+@JavaScript({ "gestures.js", "hammer.min.js" })
 public class HammerExtension extends AbstractJavaScriptExtension {
 
     /**
@@ -39,12 +37,19 @@ public class HammerExtension extends AbstractJavaScriptExtension {
      */
     private AbstractComponent component;
 
-    public HammerExtension(AbstractComponent component) {
+    public HammerExtension(AbstractComponent component,
+            boolean enableTouchEmulation) {
         super(component);
         this.component = component;
-
+        if (enableTouchEmulation) {
+            new TouchEmulatorLoader(this);
+        }
         callFunction("extend");
 
+    }
+
+    public HammerExtension(AbstractComponent component) {
+        this(component, false);
     }
 
     /**
