@@ -5,7 +5,7 @@
 	<groupId>com.vaadin.pontus</groupId>
 	<artifactId>hammergestures-demo</artifactId>
 	<packaging>war</packaging>
-	<version>0.1</version>
+	<version>1.0</version>
 	<name>HammerGestures Add-on Demo</name>
 
 	<properties>
