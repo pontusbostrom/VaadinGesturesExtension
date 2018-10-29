@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/hammergestures-add-on)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/hammergestures-add-on.svg)](https://vaadin.com/directory/component/hammergestures-add-on)
+
 # HammerGestures Add-on for Vaadin 7
 
 HammerGestures is a Javascript extension add-on for Vaadin 7. It provides the possibility to add gesture support for any Vaadin component. The gestures are recognized client-side by the Hammer.js library [http://hammerjs.github.io] (released under the MIT license). The gestures supported by this add-on are: pan, swipe, rotate and pinch.  The gestures are recognized client-side, and the gesture event is sent to the server where appropriate listeners can be registered. Parameters to the recognizers can be given to tune the frequency of events are fired (and then sent to the server). The parameters are directly fed to the Hammer library, so see the Hammer documentation for supported options.
